@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Feliz 21🌻</title>
+  <style>
+    :root{--bg:#0b1020;--petal:#ffcf33;--inner:#e76f00;--text:#fff}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(180deg,#081024 0%, #08142a 60%, #07121f 100%);padding:24px;box-sizing:border-box}
+    canvas{border-radius:20px;box-shadow:0 12px 30px rgba(2,6,23,.6);background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.02), transparent 20%)}
+    .msg{margin-top:18px;color:var(--text);text-align:center;font-size:24px}
+    .sub{font-size:14px;opacity:.85;margin-top:6px}
+    .controls{margin-top:12px;display:flex;gap:8px}
+    button{background:#fff;border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer}
+    a.small{display:inline-block;margin-left:8px;font-size:12px;color:#cbd5e1;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <canvas id="c" width="600" height="600"></canvas>
+    <div class="msg" id="msg">Creando... 🌱</div>
+    <div class="sub">Animación generada por tu página. Puedes compartirla con un QR.</div>
+    <div class="controls">
+      <button id="restart">Reiniciar</button>
+      <button id="downloadPNG">Descargar PNG</button>
+      <a class="small" id="tip">Consejo: sube este archivo a GitHub Pages o Netlify y genera un QR con la URL.</a>
+    </div>
+  </div>
+
+<script>
+/* Animación: flor (girasol) que nace desde el centro. Editable: texto, colores, número de pétalos. */
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const center = {x: W/2, y: H/2 - 30};
+let t = 0; // animation time
+let phase = 0; // 0: growing stem, 1: petals forming, 2: finished
+
+// Customizable parameters
+const petalColor = '#FFCF33';
+const diskColor = '#8B4513';
+const innerColor = '#E76F00';
+const petalsTotal = 22; // number of petals
+const petalMaxLength = 140;
+const petalMaxWidth = 46;
+const message = 'Felíz 21 Camila :3';
+
+function clear(){ctx.clearRect(0,0,W,H)}
+
+function drawBackground(){
+  // subtle ground
+  const g = ctx.createLinearGradient(0,H*0.7,0,H);
+  g.addColorStop(0,'rgba(0,0,0,0)');
+  g.addColorStop(1,'rgba(0,0,0,0.25)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,H*0.7,W,H*0.3);
+}
+
+function drawStem(progress){
+  // progress 0..1
+  ctx.save();
+  ctx.lineWidth = 6;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#2c6b2c';
+  ctx.beginPath();
+  ctx.moveTo(center.x, H+50);
+  const ctrlY = H*0.35 + (1-progress)*200; // control point to animate growth
+  ctx.quadraticCurveTo(center.x - 30, ctrlY, center.x, center.y + 60);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPetal(angle, len, width, openness){
+  // angle in radians, len width
+  ctx.save();
+  ctx.translate(center.x, center.y);
+  ctx.rotate(angle);
+  // petal path using bezier
+  ctx.beginPath();
+  ctx.moveTo(0,10);
+  ctx.bezierCurveTo(len*0.15, -width*0.2, len*0.8, -width*0.6*openness, len, 0);
+  ctx.bezierCurveTo(len*0.8, width*0.6*openness, len*0.15, width*0.2, 0,10);
+  ctx.closePath();
+  ctx.fillStyle = petalColor;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawDisk(){
+  // outer disk
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(center.x, center.y, 48, 0, Math.PI*2);
+  ctx.fillStyle = diskColor;
+  ctx.fill();
+  // inner bright center
+  ctx.beginPath();
+  ctx.arc(center.x, center.y, 30, 0, Math.PI*2);
+  ctx.fillStyle = innerColor;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSeeds(r){
+  // small dots rotating slightly
+  ctx.save();
+  ctx.translate(center.x, center.y);
+  const seedCount = 40;
+  for(let i=0;i<seedCount;i++){
+    const a = (i/seedCount)*Math.PI*2 + t*0.002;
+    const rad = 10 + (i%8)*2 + (r*10);
+    const x = Math.cos(a)*rad*0.9;
+    const y = Math.sin(a)*rad*0.9;
+    ctx.beginPath();
+    ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fillStyle = '#5a2e0f';
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawMessage(alpha){
+  const msg = document.getElementById('msg');
+  msg.style.opacity = alpha;
+  msg.textContent = message;
+}
+
+function animate(){
+  t += 1;
+  clear();
+  drawBackground();
+
+  // stage 0: stem grows until t~80
+  if(t < 80){
+    const p = t/80;
+    drawStem(p);
+    drawDisk();
+    drawMessage(0.6);
+  } else {
+    // petals forming
+    const local = Math.min(1,(t-80)/140);
+    // draw stem fully
+    drawStem(1);
+
+    // draw petals gradually
+    for(let i=0;i<petalsTotal;i++){
+      const angle = (i/petalsTotal)*Math.PI*2 + Math.sin(t*0.01 + i)*0.02;
+      // each petal has a delay
+      const petalDelay = i * 6; // frames
+      const petalProgress = Math.max(0, Math.min(1, (t-80 - petalDelay)/120));
+      const ease = 1 - Math.pow(1-petalProgress,3);
+      const len = ease * petalMaxLength;
+      const width = ease * petalMaxWidth;
+      const openness = ease; // how open the petal is
+      drawPetal(angle, len, width, openness);
+    }
+
+    // rotate whole flower slightly as it finishes
+    ctx.save();
+    ctx.translate(center.x, center.y);
+    ctx.rotate(Math.sin(t*0.01)*0.02);
+    ctx.translate(-center.x, -center.y);
+    ctx.restore();
+
+    // disk and seeds
+    drawDisk();
+    drawSeeds(Math.min(1,(t-80)/140));
+
+    // message fade in when done
+    if(t > 80 + 140 + petalsTotal*6){
+      const fade = Math.min(1,(t - (80+140+petalsTotal*6))/60);
+      drawMessage(fade);
+    } else drawMessage(0);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// controls
+document.getElementById('restart').addEventListener('click', ()=>{t=0});
+
+// download PNG of current canvas
+document.getElementById('downloadPNG').addEventListener('click', ()=>{
+  const link = document.createElement('a');
+  link.download = 'girasol_camila.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+// initial text
+document.getElementById('msg').textContent = 'Preparando la sorpresa...';
+
+// start animation
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
