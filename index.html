@@ -1,95 +1,92 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>🌻 Feliz día Cami :3 🌻</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #0b0b0b;
-      margin: 0;
-      flex-direction: column;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Cami</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            color: #333;
+        }
 
-    .sunflower {
-      position: relative;
-      width: 220px;
-      height: 220px;
-    }
+        .sunflower-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+        }
 
-    .petal {
-      position: absolute;
-      width: 80px;
-      height: 40px;
-      background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
-      border-radius: 50% 50% 50% 50%;
-      top: 50%;
-      left: 50%;
-      transform-origin: left center;
-      opacity: 0;
-      animation: grow 1s forwards;
-    }
+        .stem {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 20px;
+            height: 200px;
+            background-color: #556b2f;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
 
-    @keyframes grow {
-      from { transform: scale(0) rotate(var(--angle)) translate(80px); opacity: 0; }
-      to { transform: scale(1) rotate(var(--angle)) translate(80px); opacity: 1; }
-    }
+        .center {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background-color: #5d3d19;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+        }
 
-    .center {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      background: radial-gradient(circle at 30% 30%, #4b2e2e, #2b1a1a);
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-    }
+        .petal {
+            position: absolute;
+            top: 200px; /* Bajado un poco más para alinear con el centro */
+            left: 50%;
+            width: 40px;
+            height: 100px;
+            background-color: #ffc107;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform-origin: center -50px;
+            z-index: 2;
+        }
 
-    .stem {
-      position: absolute;
-      width: 20px;
-      height: 160px;
-      background: linear-gradient(to bottom, #1a6600, #145214);
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 10px;
-    }
-
-    .message {
-      margin-top: 40px;
-      color: #FFD700;
-      font-size: 28px;
-      text-align: center;
-      text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-    }
-  </style>
+        h1 {
+            margin-top: 20px;
+            color: #e67e22;
+        }
+    </style>
 </head>
 <body>
-  <div class="sunflower" id="flower">
-    <div class="center"></div>
-    <div class="stem"></div>
-  </div>
-  <div class="message">🌻 Feliz día Cami :3 🌻</div>
+    <div class="sunflower-container">
+        <div class="stem"></div>
+        <div class="center"></div>
 
-  <script>
-    const flower = document.getElementById('flower');
-    const numPetals = 20;
-    for (let i = 0; i < numPetals; i++) {
-      const petal = document.createElement('div');
-      petal.className = 'petal';
-      const angle = (360 / numPetals) * i;
-      petal.style.setProperty('--angle', angle + 'deg');
-      petal.style.animationDelay = (i * 0.1) + 's';
-      flower.appendChild(petal);
-    }
-  </script>
+        <!-- Pétalos alrededor -->
+        <div class="petal" style="transform: translateX(-50%) rotate(0deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(30deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(60deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(90deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(120deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(150deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(180deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(210deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(240deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(270deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(300deg);"></div>
+        <div class="petal" style="transform: translateX(-50%) rotate(330deg);"></div>
+    </div>
+
+    <h1>🌻 Feliz día Cami :3 🌻</h1>
+    <h2> Sabes, aunque te conozco poquito, me caes súper bien ✨ y hoy 21 de septiembre quería dejarte 
+      este pequeño detalle para que recuerdes que eres una gran personita, feliz dia 🌻 y ojalá sigas con ganas en lo que te gusta y que logres todo lo que te propones 🙌💫.</h2>
 </body>
 </html>
-
