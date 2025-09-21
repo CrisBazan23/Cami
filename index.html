@@ -3,196 +3,292 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Feliz 21🌻</title>
+  <title>🌻 Feliz dia Cami :3 🌻</title>
   <style>
-    :root{--bg:#0b1020;--petal:#ffcf33;--inner:#e76f00;--text:#fff}
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(180deg,#081024 0%, #08142a 60%, #07121f 100%);padding:24px;box-sizing:border-box}
-    canvas{border-radius:20px;box-shadow:0 12px 30px rgba(2,6,23,.6);background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.02), transparent 20%)}
-    .msg{margin-top:18px;color:var(--text);text-align:center;font-size:24px}
-    .sub{font-size:14px;opacity:.85;margin-top:6px}
-    .controls{margin-top:12px;display:flex;gap:8px}
-    button{background:#fff;border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer}
-    a.small{display:inline-block;margin-left:8px;font-size:12px;color:#cbd5e1;text-decoration:none}
+    :root{
+      --bg1:#0f1724;
+      --bg2:#071022;
+      --petal1:#ffd54a;
+      --petal2:#ffb300;
+      --disk:#6b3d12;
+      --disk2:#e07b00;
+      --leaf:#2d7a3a;
+      --text:#fffef9;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.03), transparent),
+                  linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 60%);
+      color:var(--text);
+    }
+
+    .card{
+      width:min(880px,96vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:20px;
+      padding:28px;
+      box-shadow: 0 20px 50px rgba(2,6,23,0.7);
+      display:flex;
+      gap:24px;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    }
+
+    .scene{
+      width:520px;
+      max-width:92%;
+      aspect-ratio:1/1;
+      position:relative;
+    }
+
+    svg{width:100%;height:100%;display:block;overflow:visible}
+
+    /* Petals animation using CSS variables for stagger */
+    .petal{
+      transform-origin: 50% 50%;
+      animation: petalGrow 900ms cubic-bezier(.2,.9,.2,1) forwards;
+      opacity:0;
+    }
+    @keyframes petalGrow{
+      0{transform:scale(0.08) translateY(40px); opacity:0}
+      60%{opacity:1}
+      100{transform:scale(1) translateY(0); opacity:1}
+    }
+
+    /* center pulse */
+    .centerSeed{ transform-origin: 50% 50%; animation: seedPulse 1800ms ease-in-out infinite; }
+    @keyframes seedPulse{
+      0%{transform:scale(1)}
+      50%{transform:scale(0.96)}
+      100%{transform:scale(1)}
+    }
+
+    /* subtle rotate for the whole flower */
+    .flowerWrap{ animation: sway 6s ease-in-out infinite; transform-origin:center; }
+    @keyframes sway{
+      0%{transform: rotate(-1deg)}
+      50%{transform: rotate(1deg)}
+      100%{transform: rotate(-1deg)}
+    }
+
+    /* leaves grow */
+    .leaf{ transform-origin: left center; animation: leafGrow 900ms cubic-bezier(.2,.9,.2,1) forwards; opacity:0; }
+    @keyframes leafGrow{
+      0{transform:scale(0.06) translateX(-20px); opacity:0}
+      100{transform:scale(1) translateX(0); opacity:1}
+    }
+
+    /* message */
+    .message{
+      margin-top:12px;
+      text-align:center;
+      font-weight:700;
+      font-size:22px;
+      letter-spacing:0.6px;
+      opacity:0;
+      transform:translateY(14px);
+      transition: all 600ms cubic-bezier(.2,.9,.2,1);
+    }
+    .message.show{opacity:1; transform:translateY(0);}
+
+    .sub{font-weight:500; font-size:13px; opacity:0.85; margin-top:8px}
+
+    .controls{margin-top:14px;display:flex;gap:10px}
+    button{background:#fff;border:0;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+    .small{font-size:12px;color:#cbd5e1;text-decoration:none;align-self:center}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <canvas id="c" width="600" height="600"></canvas>
-    <div class="msg" id="msg">Creando... 🌱</div>
-    <div class="sub">Animación generada por tu página. Puedes compartirla con un QR.</div>
-    <div class="controls">
-      <button id="restart">Reiniciar</button>
-      <button id="downloadPNG">Descargar PNG</button>
-      <a class="small" id="tip">Consejo: sube este archivo a GitHub Pages o Netlify y genera un QR con la URL.</a>
+  <div class="card" role="main" aria-label="Tarjeta Girasol para Cami">
+    <div class="scene" id="scene">
+      <!-- SVG girasol -->
+      <svg viewBox="0 0 600 600" aria-hidden="true">
+        <defs>
+          <radialGradient id="petalGrad" cx="30%" cy="30%">
+            <stop offset="0%" stop-color="var(--petal1)"/>
+            <stop offset="100%" stop-color="var(--petal2)"/>
+          </radialGradient>
+          <radialGradient id="diskGrad" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="var(--disk2)"/>
+            <stop offset="100%" stop-color="var(--disk)"/>
+          </radialGradient>
+          <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feBlend in="SourceGraphic" in2="b"/>
+          </filter>
+        </defs>
+
+        <!-- ground shadow -->
+        <ellipse cx="300" cy="520" rx="200" ry="24" fill="rgba(0,0,0,0.28)"/>
+
+        <!-- stem -->
+        <g id="plant" transform="translate(0,0)">
+          <path id="stem" d="M300 600 C 300 480 320 420 320 360" stroke="#2c6b2c" stroke-width="10" stroke-linecap="round" fill="none" opacity="0"/>
+          <!-- leaves -->
+          <path class="leaf" id="leafL" d="M300 470 C 230 430 220 390 280 360" fill="none" stroke="var(--leaf)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="leaf" id="leafR" d="M320 430 C 380 400 420 370 360 340" fill="none" stroke="var(--leaf)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+
+        <!-- flower group -->
+        <g class="flowerWrap" transform="translate(300,220)">
+          <!-- petals (will be created by JS with staggered animation delay) -->
+          <!-- center disk -->
+          <circle class="center bgDisk" cx="0" cy="0" r="62" fill="url(#diskGrad)" filter="url(#soft)"/>
+          <!-- seeds pattern -->
+          <g id="seeds" class="centerSeed" aria-hidden="true"></g>
+          <!-- small inner ring highlight -->
+          <circle cx="0" cy="0" r="28" fill="#ffd27a" opacity="0.85"/>
+        </g>
+
+        <!-- decorative sky sparkles -->
+        <g opacity="0.07" transform="translate(0,0)">
+          <circle cx="90" cy="80" r="6" fill="#fff"/>
+          <circle cx="120" cy="120" r="4" fill="#fff"/>
+          <circle cx="480" cy="60" r="5" fill="#fff"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="message" id="message">🌻 Feliz dia Cami :3 🌻</div>
+    <div class="sub">Comparte el link o genera un QR para que lo escaneen.</div>
+
+    <div class="controls" aria-hidden="true">
+      <button id="replay">Volver a florecer</button>
+      <button id="download">Descargar imagen</button>
+      <span class="small">Haz clic en descargar para capturar la escena.</span>
     </div>
   </div>
 
-<script>
-/* Animación: flor (girasol) que nace desde el centro. Editable: texto, colores, número de pétalos. */
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
-const center = {x: W/2, y: H/2 - 30};
-let t = 0; // animation time
-let phase = 0; // 0: growing stem, 1: petals forming, 2: finished
+  <script>
+    // Crear petalos y semillas y animar con JS para control de tiempos
+    const svgNS = "http://www.w3.org/2000/svg";
+    const flower = document.querySelector('.flowerWrap');
+    const seedsGroup = document.getElementById('seeds');
+    const message = document.getElementById('message');
+    const stem = document.getElementById('stem');
 
-// Customizable parameters
-const petalColor = '#FFCF33';
-const diskColor = '#8B4513';
-const innerColor = '#E76F00';
-const petalsTotal = 22; // number of petals
-const petalMaxLength = 140;
-const petalMaxWidth = 46;
-const message = 'Felíz 21 Camila :3';
+    // parámetros
+    const PETALS = 20;
+    const PETAL_LENGTH = 170;
+    const PETAL_WIDTH = 56;
 
-function clear(){ctx.clearRect(0,0,W,H)}
-
-function drawBackground(){
-  // subtle ground
-  const g = ctx.createLinearGradient(0,H*0.7,0,H);
-  g.addColorStop(0,'rgba(0,0,0,0)');
-  g.addColorStop(1,'rgba(0,0,0,0.25)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0,H*0.7,W,H*0.3);
-}
-
-function drawStem(progress){
-  // progress 0..1
-  ctx.save();
-  ctx.lineWidth = 6;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = '#2c6b2c';
-  ctx.beginPath();
-  ctx.moveTo(center.x, H+50);
-  const ctrlY = H*0.35 + (1-progress)*200; // control point to animate growth
-  ctx.quadraticCurveTo(center.x - 30, ctrlY, center.x, center.y + 60);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawPetal(angle, len, width, openness){
-  // angle in radians, len width
-  ctx.save();
-  ctx.translate(center.x, center.y);
-  ctx.rotate(angle);
-  // petal path using bezier
-  ctx.beginPath();
-  ctx.moveTo(0,10);
-  ctx.bezierCurveTo(len*0.15, -width*0.2, len*0.8, -width*0.6*openness, len, 0);
-  ctx.bezierCurveTo(len*0.8, width*0.6*openness, len*0.15, width*0.2, 0,10);
-  ctx.closePath();
-  ctx.fillStyle = petalColor;
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawDisk(){
-  // outer disk
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(center.x, center.y, 48, 0, Math.PI*2);
-  ctx.fillStyle = diskColor;
-  ctx.fill();
-  // inner bright center
-  ctx.beginPath();
-  ctx.arc(center.x, center.y, 30, 0, Math.PI*2);
-  ctx.fillStyle = innerColor;
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawSeeds(r){
-  // small dots rotating slightly
-  ctx.save();
-  ctx.translate(center.x, center.y);
-  const seedCount = 40;
-  for(let i=0;i<seedCount;i++){
-    const a = (i/seedCount)*Math.PI*2 + t*0.002;
-    const rad = 10 + (i%8)*2 + (r*10);
-    const x = Math.cos(a)*rad*0.9;
-    const y = Math.sin(a)*rad*0.9;
-    ctx.beginPath();
-    ctx.arc(x,y,3,0,Math.PI*2);
-    ctx.fillStyle = '#5a2e0f';
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
-function drawMessage(alpha){
-  const msg = document.getElementById('msg');
-  msg.style.opacity = alpha;
-  msg.textContent = message;
-}
-
-function animate(){
-  t += 1;
-  clear();
-  drawBackground();
-
-  // stage 0: stem grows until t~80
-  if(t < 80){
-    const p = t/80;
-    drawStem(p);
-    drawDisk();
-    drawMessage(0.6);
-  } else {
-    // petals forming
-    const local = Math.min(1,(t-80)/140);
-    // draw stem fully
-    drawStem(1);
-
-    // draw petals gradually
-    for(let i=0;i<petalsTotal;i++){
-      const angle = (i/petalsTotal)*Math.PI*2 + Math.sin(t*0.01 + i)*0.02;
-      // each petal has a delay
-      const petalDelay = i * 6; // frames
-      const petalProgress = Math.max(0, Math.min(1, (t-80 - petalDelay)/120));
-      const ease = 1 - Math.pow(1-petalProgress,3);
-      const len = ease * petalMaxLength;
-      const width = ease * petalMaxWidth;
-      const openness = ease; // how open the petal is
-      drawPetal(angle, len, width, openness);
+    function createPetal(i, total){
+      const g = document.createElementNS(svgNS, 'g');
+      const angle = (i/total) * 360;
+      g.setAttribute('transform', `rotate(${angle}) translate(${PETAL_LENGTH/2}, 0)`);
+      // petal shape (ellipse-like path)
+      const pet = document.createElementNS(svgNS, 'path');
+      pet.setAttribute('d', `M0,0 C ${PETAL_LENGTH*0.12},${-PETAL_WIDTH*0.2} ${PETAL_LENGTH*0.85},${-PETAL_WIDTH*0.6} ${PETAL_LENGTH},0 C ${PETAL_LENGTH*0.85},${PETAL_WIDTH*0.6} ${PETAL_LENGTH*0.12},${PETAL_WIDTH*0.2} 0,0 Z`);
+      pet.setAttribute('fill', 'url(#petalGrad)');
+      pet.setAttribute('class', 'petal');
+      pet.style.transformOrigin = '0px 0px';
+      // stagger animation delay via CSS animationDelay
+      pet.style.animationDelay = `${120 + i*40}ms`;
+      g.appendChild(pet);
+      return g;
     }
 
-    // rotate whole flower slightly as it finishes
-    ctx.save();
-    ctx.translate(center.x, center.y);
-    ctx.rotate(Math.sin(t*0.01)*0.02);
-    ctx.translate(-center.x, -center.y);
-    ctx.restore();
+    function createSeeds(){
+      const count = 38;
+      for(let i=0;i<count;i++){
+        const angle = (i/count) * Math.PI * 2;
+        const r = 36 + (i%6)*3;
+        const x = Math.cos(angle) * r;
+        const y = Math.sin(angle) * r;
+        const s = document.createElementNS(svgNS, 'circle');
+        s.setAttribute('cx', x);
+        s.setAttribute('cy', y);
+        s.setAttribute('r', 4);
+        s.setAttribute('fill', '#3b2310');
+        s.style.opacity = 0;
+        s.style.transition = 'opacity 500ms ease';
+        seedsGroup.appendChild(s);
+      }
+    }
 
-    // disk and seeds
-    drawDisk();
-    drawSeeds(Math.min(1,(t-80)/140));
+    function resetScene(){
+      // clear petals (if any)
+      const existing = flower.querySelectorAll('.petal');
+      existing.forEach(p => p.parentNode.remove());
+      seedsGroup.innerHTML = '';
+      message.classList.remove('show');
+      // hide stem initially
+      stem.style.opacity = 0;
+      // hide leaves
+      document.getElementById('leafL').style.opacity = 0;
+      document.getElementById('leafR').style.opacity = 0;
+    }
 
-    // message fade in when done
-    if(t > 80 + 140 + petalsTotal*6){
-      const fade = Math.min(1,(t - (80+140+petalsTotal*6))/60);
-      drawMessage(fade);
-    } else drawMessage(0);
-  }
+    function bloom(){
+      resetScene();
+      // animate stem grow
+      stem.style.transition = 'opacity 600ms ease';
+      setTimeout(()=>{ stem.style.opacity = 1; }, 120);
 
-  requestAnimationFrame(animate);
-}
+      // leaves
+      const leafL = document.getElementById('leafL');
+      const leafR = document.getElementById('leafR');
+      leafL.style.animationDelay = '480ms';
+      leafR.style.animationDelay = '520ms';
+      leafL.style.opacity = 1;
+      leafR.style.opacity = 1;
 
-// controls
-document.getElementById('restart').addEventListener('click', ()=>{t=0});
+      // petals
+      for(let i=0;i<PETALS;i++){
+        const node = createPetal(i, PETALS);
+        // set staggered animation via style
+        node.querySelector('.petal').style.animationDelay = `${600 + i*90}ms`;
+        flower.appendChild(node);
+      }
 
-// download PNG of current canvas
-document.getElementById('downloadPNG').addEventListener('click', ()=>{
-  const link = document.createElement('a');
-  link.download = 'girasol_camila.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-});
+      // seeds
+      createSeeds();
+      // reveal seeds after petals
+      const seeds = seedsGroup.querySelectorAll('circle');
+      seeds.forEach((s, idx) => {
+        setTimeout(()=>{ s.style.opacity = 1; }, 1600 + idx*25);
+      });
 
-// initial text
-document.getElementById('msg').textContent = 'Preparando la sorpresa...';
+      // show message after animation finishes
+      setTimeout(()=>{ message.classList.add('show'); }, 2400 + PETALS*90);
+    }
 
-// start animation
-requestAnimationFrame(animate);
-</script>
+    // inicial
+    bloom();
+
+    // controles
+    document.getElementById('replay').addEventListener('click', ()=>{ bloom(); });
+
+    // descargar captura PNG (usa svg dataURL y canvas)
+    document.getElementById('download').addEventListener('click', async ()=>{
+      const svg = document.querySelector('svg');
+      const xml = new XMLSerializer().serializeToString(svg);
+      const svg64 = btoa(unescape(encodeURIComponent(xml)));
+      const b64start = 'data:image/svg+xml;base64,';
+      const img = new Image();
+      img.onload = function(){
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        // white-ish background
+        ctx.fillStyle = 'rgba(7,16,34,1)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0);
+        const png = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = png;
+        link.download = 'girasol_cami.png';
+        link.click();
+      };
+      img.src = b64start + svg64;
+    });
+  </script>
 </body>
 </html>
